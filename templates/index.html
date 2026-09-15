@@ -75,16 +75,17 @@
             <div class="form-group">
               <label class="form-label" for="Age">
                 Age
-                <span class="form-hint">Years</span>
+                <span class="form-hint">Years (e.g. 18-100)</span>
               </label>
-              <input type="number" id="Age" name="Age" class="form-control" min="18" max="110" value="54" required>
+              <input type="number" id="Age" name="Age" class="form-control" min="18" max="110" placeholder="e.g. 54" required>
             </div>
 
             <!-- Sex -->
             <div class="form-group">
               <label class="form-label" for="Sex">Biological Sex</label>
               <select id="Sex" name="Sex" class="form-control" required>
-                <option value="M" selected>Male (M)</option>
+                <option value="" disabled selected>Select sex (e.g. Male)</option>
+                <option value="M">Male (M)</option>
                 <option value="F">Female (F)</option>
               </select>
             </div>
@@ -96,7 +97,8 @@
                 <span class="form-hint">CPT</span>
               </label>
               <select id="ChestPainType" name="ChestPainType" class="form-control" required>
-                <option value="ASY" selected>Asymptomatic (ASY)</option>
+                <option value="" disabled selected>Select type (e.g. Asymptomatic)</option>
+                <option value="ASY">Asymptomatic (ASY)</option>
                 <option value="NAP">Non-Anginal Pain (NAP)</option>
                 <option value="ATA">Atypical Angina (ATA)</option>
                 <option value="TA">Typical Angina (TA)</option>
@@ -109,7 +111,7 @@
                 Resting Blood Pressure
                 <span class="form-hint">mm Hg</span>
               </label>
-              <input type="number" id="RestingBP" name="RestingBP" class="form-control" min="60" max="250" value="130" required>
+              <input type="number" id="RestingBP" name="RestingBP" class="form-control" min="60" max="250" placeholder="e.g. 130" required>
             </div>
 
             <!-- Cholesterol -->
@@ -118,14 +120,15 @@
                 Serum Cholesterol
                 <span class="form-hint">mg/dl</span>
               </label>
-              <input type="number" id="Cholesterol" name="Cholesterol" class="form-control" min="0" max="700" value="230" required>
+              <input type="number" id="Cholesterol" name="Cholesterol" class="form-control" min="0" max="700" placeholder="e.g. 230 (or 0 if unknown)" required>
             </div>
 
             <!-- Fasting Blood Sugar -->
             <div class="form-group">
               <label class="form-label" for="FastingBS">Fasting Blood Sugar</label>
               <select id="FastingBS" name="FastingBS" class="form-control" required>
-                <option value="0" selected>&le; 120 mg/dl (Normal)</option>
+                <option value="" disabled selected>Select level (e.g. &le; 120 mg/dl)</option>
+                <option value="0">&le; 120 mg/dl (Normal)</option>
                 <option value="1">&gt; 120 mg/dl (Hyperglycemic)</option>
               </select>
             </div>
@@ -134,7 +137,8 @@
             <div class="form-group">
               <label class="form-label" for="RestingECG">Resting ECG</label>
               <select id="RestingECG" name="RestingECG" class="form-control" required>
-                <option value="Normal" selected>Normal</option>
+                <option value="" disabled selected>Select ECG (e.g. Normal)</option>
+                <option value="Normal">Normal</option>
                 <option value="ST">ST-T Wave Abnormality</option>
                 <option value="LVH">Left Ventricular Hypertrophy (LVH)</option>
               </select>
@@ -146,14 +150,15 @@
                 Max Heart Rate
                 <span class="form-hint">bpm</span>
               </label>
-              <input type="number" id="MaxHR" name="MaxHR" class="form-control" min="50" max="230" value="145" required>
+              <input type="number" id="MaxHR" name="MaxHR" class="form-control" min="50" max="230" placeholder="e.g. 145" required>
             </div>
 
             <!-- Exercise Angina -->
             <div class="form-group">
               <label class="form-label" for="ExerciseAngina">Exercise-Induced Angina</label>
               <select id="ExerciseAngina" name="ExerciseAngina" class="form-control" required>
-                <option value="N" selected>No (N)</option>
+                <option value="" disabled selected>Select angina (e.g. No)</option>
+                <option value="N">No (N)</option>
                 <option value="Y">Yes (Y)</option>
               </select>
             </div>
@@ -164,15 +169,16 @@
                 Oldpeak (ST Depression)
                 <span class="form-hint">Float mm</span>
               </label>
-              <input type="number" id="Oldpeak" name="Oldpeak" class="form-control" step="0.1" min="-3.0" max="7.0" value="1.2" required>
+              <input type="number" id="Oldpeak" name="Oldpeak" class="form-control" step="0.1" min="-3.0" max="7.0" placeholder="e.g. 1.2" required>
             </div>
 
             <!-- ST Slope -->
             <div class="form-group full-width">
               <label class="form-label" for="ST_Slope">Peak Exercise ST Segment Slope</label>
               <select id="ST_Slope" name="ST_Slope" class="form-control" required>
+                <option value="" disabled selected>Select ST slope (e.g. Flat)</option>
                 <option value="Up">Upsloping (Up - Favorable)</option>
-                <option value="Flat" selected>Flat (Flat - High Ischemic Correlation)</option>
+                <option value="Flat">Flat (Flat - High Ischemic Correlation)</option>
                 <option value="Down">Downsloping (Down - Critical Abnormality)</option>
               </select>
             </div>

@@ -94,26 +94,26 @@ with tab_assess:
         col1, col2, col3 = st.columns(3)
 
         with col1:
-            age = st.slider("Age (Years)", 18, 100, int(current["Age"]))
-            sex = st.selectbox("Biological Sex", ["M", "F"], index=0 if current["Sex"] == "M" else 1)
+            age = st.slider("Age (Years) — e.g. 54", 18, 100, int(current["Age"]))
+            sex = st.selectbox("Biological Sex — e.g. Male", ["M", "F"], index=0 if current["Sex"] == "M" else 1)
             cpt = st.selectbox(
-                "Chest Pain Type",
+                "Chest Pain Type — e.g. Asymptomatic (ASY)",
                 ["ASY", "NAP", "ATA", "TA"],
                 index=["ASY", "NAP", "ATA", "TA"].index(current["CP"]),
                 help="ASY: Asymptomatic, NAP: Non-Anginal, ATA: Atypical Angina, TA: Typical Angina"
             )
-            bp = st.number_input("Resting Blood Pressure (mm Hg)", 60, 240, int(current["BP"]))
+            bp = st.number_input("Resting Blood Pressure (mm Hg) — e.g. 130", 60, 240, int(current["BP"]))
 
         with col2:
-            chol = st.number_input("Serum Cholesterol (mg/dl)", 0, 650, int(current["Chol"]), help="Enter 0 if unknown")
-            fbs = st.selectbox("Fasting Blood Sugar", [0, 1], index=int(current["FBS"]), format_func=lambda x: "Normal (<= 120 mg/dl)" if x == 0 else "High (> 120 mg/dl)")
-            ecg = st.selectbox("Resting ECG", ["Normal", "ST", "LVH"], index=["Normal", "ST", "LVH"].index(current["ECG"]))
-            max_hr = st.slider("Max Heart Rate Achieved (bpm)", 50, 220, int(current["HR"]))
+            chol = st.number_input("Serum Cholesterol (mg/dl) — e.g. 230", 0, 650, int(current["Chol"]), help="Enter 0 if unknown")
+            fbs = st.selectbox("Fasting Blood Sugar — e.g. <= 120 mg/dl", [0, 1], index=int(current["FBS"]), format_func=lambda x: "Normal (<= 120 mg/dl)" if x == 0 else "High (> 120 mg/dl)")
+            ecg = st.selectbox("Resting ECG — e.g. Normal", ["Normal", "ST", "LVH"], index=["Normal", "ST", "LVH"].index(current["ECG"]))
+            max_hr = st.slider("Max Heart Rate (bpm) — e.g. 145", 50, 220, int(current["HR"]))
 
         with col3:
-            angina = st.selectbox("Exercise-Induced Angina", ["N", "Y"], index=0 if current["Ang"] == "N" else 1)
-            oldpeak = st.slider("Oldpeak ST Depression (mm)", -2.5, 6.5, float(current["Old"]), step=0.1)
-            slope = st.selectbox("Peak Exercise ST Slope", ["Up", "Flat", "Down"], index=["Up", "Flat", "Down"].index(current["Slope"]))
+            angina = st.selectbox("Exercise-Induced Angina — e.g. No (N)", ["N", "Y"], index=0 if current["Ang"] == "N" else 1)
+            oldpeak = st.slider("Oldpeak ST Depression (mm) — e.g. 1.2", -2.5, 6.5, float(current["Old"]), step=0.1)
+            slope = st.selectbox("Peak Exercise ST Slope — e.g. Flat or Up", ["Up", "Flat", "Down"], index=["Up", "Flat", "Down"].index(current["Slope"]))
 
         submitted = st.form_submit_button("🫀 Run Diagnostic Assessment", use_container_width=True)
 

@@ -4,7 +4,7 @@ FROM python:3.11-slim
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PORT=5000
+    PORT=7860
 
 # Set working directory
 WORKDIR /app
@@ -25,16 +25,16 @@ COPY models/ ./models/
 COPY templates/ ./templates/
 COPY static/ ./static/
 
-# Create a non-root user for security best practices
+# Create a non-root user (Hugging Face Spaces requires UID 1000)
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
 USER appuser
 
-# Expose web application port
-EXPOSE 5000
+# Expose web application port (7860 for Hugging Face Spaces)
+EXPOSE 7860
 
 # Container healthcheck
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD curl -f http://localhost:5000/api/health || exit 1
+    CMD curl -f http://localhost:7860/api/health || exit 1
 
-# Launch production WSGI server with Gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "3", "--threads", "2", "--timeout", "120", "wsgi:application"]
+# Launch production WSGI server with Gunicorn (reads PORT dynamically)
+CMD exec gunicorn --bind 0.0.0.0:${PORT:-7860} --workers 3 --threads 2 --timeout 120 wsgi:application

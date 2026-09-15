@@ -1,3 +1,13 @@
+---
+title: CardioSense AI - Heart Disease Risk Predictor
+emoji: 🫀
+colorFrom: blue
+colorTo: red
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # CardioSense AI: Full-Stack Heart Disease Risk Prediction Platform
 
 An end-to-end clinical decision support platform built on the UCI Heart Disease dataset (918 patient cohort). Features a production machine learning pipeline, full model benchmarking suite, interactive medical dashboard, and RESTful inference API.

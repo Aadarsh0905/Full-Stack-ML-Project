@@ -46,7 +46,7 @@
     <div class="dashboard-grid">
       
       <!-- Patient Assessment Form Card -->
-      <div class="card" id="patientFormCard">
+      <div class="card reveal-lazy" id="patientFormCard">
         <div class="card-header">
           <div class="card-title">
             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -237,7 +237,7 @@
       </div>
 
       <!-- Result Card -->
-      <div class="card" id="resultCard">
+      <div class="card reveal-lazy" id="resultCard">
         <div class="card-header">
           <div class="card-title">
             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -250,14 +250,27 @@
         <!-- Initial Placeholder State -->
         <div id="resultPlaceholder" class="result-placeholder">
           <div class="pulse-circle">
-            <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg width="34" height="34" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
             </svg>
           </div>
-          <h3 style="color: var(--text-main); font-weight: 600; margin-bottom: 0.5rem;">Awaiting Patient Data</h3>
-          <p style="font-size: 0.88rem; max-width: 320px; margin: 0 auto;">
-            Configure the 11 biomarkers or select a preset case to calculate probability and risk stratification.
+          <h3 style="color: var(--text-main); font-weight: 750; margin-bottom: 0.5rem; font-size: 1.15rem;">Awaiting Patient Data</h3>
+          <p style="font-size: 0.9rem; max-width: 330px; margin: 0 auto; color: var(--text-muted);">
+            Configure the biomarkers above or select a preset cohort case to calculate probability and risk stratification.
           </p>
+        </div>
+
+        <!-- Skeleton Loading State (Shimmer Animation) -->
+        <div id="resultSkeleton" class="skeleton-container" style="display: none;">
+          <div class="skeleton-box skeleton-circle"></div>
+          <div class="skeleton-box skeleton-pill"></div>
+          <div class="skeleton-box skeleton-card-block"></div>
+          <div class="skeleton-box skeleton-card-block"></div>
+          <div style="width: 100%; display: flex; flex-direction: column; gap: 0.6rem; margin-top: 0.5rem;">
+            <div class="skeleton-box skeleton-line"></div>
+            <div class="skeleton-box skeleton-line medium"></div>
+            <div class="skeleton-box skeleton-line short"></div>
+          </div>
         </div>
 
         <!-- Populated Result Content -->
@@ -272,14 +285,14 @@
             <div id="scoreBadge" class="risk-badge badge-mod">ANALYZING</div>
           </div>
 
-          <div style="background: rgba(15, 23, 42, 0.5); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-card); margin-bottom: 1.25rem;">
-            <div style="font-size: 0.85rem; font-weight: 700; color: #fff; margin-bottom: 0.35rem;">Clinical Evaluation Summary:</div>
-            <p id="clinicalSummaryText" style="font-size: 0.88rem; color: var(--text-muted);"></p>
+          <div style="background: rgba(241, 245, 249, 0.7); padding: 1.15rem 1.25rem; border-radius: var(--radius-md); border: 1px solid rgba(226, 232, 240, 0.85); margin-bottom: 1.25rem;">
+            <div style="font-size: 0.88rem; font-weight: 750; color: var(--text-main); margin-bottom: 0.35rem;">Clinical Evaluation Summary:</div>
+            <p id="clinicalSummaryText" style="font-size: 0.9rem; color: var(--text-body);"></p>
           </div>
 
-          <div style="background: rgba(37, 99, 235, 0.08); border-left: 3px solid var(--primary); padding: 0.85rem 1rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-bottom: 1.25rem;">
-            <div style="font-size: 0.82rem; font-weight: 700; color: var(--accent-cyan); margin-bottom: 0.25rem;">Recommended Action Protocol:</div>
-            <p id="actionPlanText" style="font-size: 0.85rem; color: var(--text-main);"></p>
+          <div style="background: rgba(99, 102, 241, 0.08); border-left: 3.5px solid var(--primary); padding: 1.05rem 1.25rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-bottom: 1.25rem; border-top: 1px solid rgba(99, 102, 241, 0.15); border-right: 1px solid rgba(99, 102, 241, 0.15); border-bottom: 1px solid rgba(99, 102, 241, 0.15);">
+            <div style="font-size: 0.86rem; font-weight: 750; color: var(--primary); margin-bottom: 0.25rem;">Recommended Action Protocol:</div>
+            <p id="actionPlanText" style="font-size: 0.88rem; color: var(--text-main);"></p>
           </div>
 
           <!-- Factors Section -->
@@ -312,28 +325,28 @@
     </div>
 
     <!-- Batch Prediction Section -->
-    <div class="card" style="margin-top: 2.5rem;">
+    <div class="card reveal-lazy" style="margin-top: 2.75rem;">
       <div class="card-header">
         <div class="card-title">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color: var(--primary);">
             <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
           </svg>
           Batch Patient Screening (CSV Upload)
         </div>
-        <span style="font-size: 0.8rem; color: var(--text-dim);">Multi-Patient Clinical Assessment</span>
+        <span style="font-size: 0.8rem; color: var(--text-dim); font-weight: 600;">Multi-Patient Clinical Assessment</span>
       </div>
       
-      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">
+      <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.25rem;">
         Upload a hospital cohort CSV file with patient records to generate instant automated risk stratifications.
       </p>
 
       <form id="batchUploadForm" style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-        <input type="file" id="batchFile" accept=".csv" class="form-control" style="max-width: 350px;">
-        <button type="submit" class="btn-preset" style="background: var(--primary); color: white; padding: 0.65rem 1.25rem; font-weight: 600;">
+        <input type="file" id="batchFile" accept=".csv" class="form-control" style="max-width: 360px;">
+        <button type="submit" class="btn-preset" style="background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; border: none; padding: 0.75rem 1.5rem; font-weight: 700; box-shadow: 0 4px 14px var(--primary-glow); border-radius: var(--radius-sm);">
           Process Cohort File
         </button>
       </form>
-      <div id="batchStatus" style="display: none; margin-top: 1rem; color: var(--accent-cyan); font-size: 0.9rem; font-weight: 500;"></div>
+      <div id="batchStatus" style="display: none; margin-top: 1rem; color: var(--primary); font-size: 0.92rem; font-weight: 600;"></div>
 
       <div id="batchResultsContainer" style="display: none; margin-top: 1.5rem; overflow-x: auto;">
         <table class="styled-table">
@@ -357,6 +370,6 @@
     <p>CardioSense AI &bull; Full-Stack Healthcare Machine Learning Pipeline &bull; Developed with Scikit-Learn &amp; Flask</p>
   </footer>
 
-  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 </body>
 </html>

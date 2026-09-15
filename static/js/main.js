@@ -154,14 +154,22 @@ document.addEventListener("DOMContentLoaded", () => {
         payload[key] = value;
       });
 
-      // UI Loading state
+      // UI Loading with Skeleton Shimmer Animation
       submitBtn.disabled = true;
       submitBtn.innerHTML = `
-        <svg class="spinner" width="20" height="20" viewBox="0 0 50 50" style="animation: spin 1s linear infinite;">
+        <svg class="spinner" width="18" height="18" viewBox="0 0 50 50" style="animation: spin 1s linear infinite;">
           <circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="5" stroke-dasharray="31.4 31.4"></circle>
         </svg>
         Analyzing Cardiovascular Biomarkers...
       `;
+
+      const placeholder = document.getElementById("resultPlaceholder");
+      const resultContent = document.getElementById("resultContent");
+      const skeleton = document.getElementById("resultSkeleton");
+
+      if (placeholder) placeholder.style.display = "none";
+      if (resultContent) resultContent.style.display = "none";
+      if (skeleton) skeleton.style.display = "flex";
 
       try {
         const response = await fetch("/api/predict", {
@@ -178,8 +186,11 @@ document.addEventListener("DOMContentLoaded", () => {
           throw new Error(data.errors ? data.errors.join("<br>") : (data.error || "Prediction failed"));
         }
 
+        if (skeleton) skeleton.style.display = "none";
         renderPredictionResult(data.data);
       } catch (err) {
+        if (skeleton) skeleton.style.display = "none";
+        if (placeholder) placeholder.style.display = "block";
         if (errorAlert) {
           errorAlert.style.display = "block";
           errorAlert.innerHTML = `<strong>Validation Error:</strong><br>${err.message}`;
@@ -256,6 +267,22 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+  // Progressive Lazy Loading of Dashboard Elements on Scroll
+  const lazyCards = document.querySelectorAll(".reveal-lazy");
+  if ("IntersectionObserver" in window) {
+    const cardObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-revealed");
+          cardObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.05 });
+
+    lazyCards.forEach((c) => cardObserver.observe(c));
+  } else {
+    lazyCards.forEach((c) => c.classList.add("is-revealed"));
+  }
 });
 
 function renderPredictionResult(res) {
@@ -263,7 +290,14 @@ function renderPredictionResult(res) {
   const resultContent = document.getElementById("resultContent");
 
   if (placeholder) placeholder.style.display = "none";
-  if (resultContent) resultContent.style.display = "block";
+  if (resultContent) {
+    resultContent.style.opacity = "0";
+    resultContent.style.display = "block";
+    setTimeout(() => {
+      resultContent.style.transition = "opacity 0.35s ease-in";
+      resultContent.style.opacity = "1";
+    }, 20);
+  }
 
   // Score display
   const scoreValue = document.getElementById("scoreValue");

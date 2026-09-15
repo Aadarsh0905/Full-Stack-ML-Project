@@ -41,23 +41,23 @@
     </header>
 
     <!-- Executive Answer Box -->
-    <div class="card" style="margin-bottom: 2rem; border-color: rgba(56, 189, 248, 0.4); background: linear-gradient(180deg, rgba(14, 30, 64, 0.85) 0%, rgba(11, 19, 41, 0.9) 100%);">
+    <div class="card reveal-lazy" style="margin-bottom: 2.25rem; border: 1.5px solid rgba(99, 102, 241, 0.25); background: linear-gradient(135deg, rgba(238, 242, 255, 0.92) 0%, rgba(255, 255, 255, 0.85) 100%);">
       <div class="card-header">
-        <div class="card-title" style="color: #38bdf8;">
+        <div class="card-title" style="color: var(--primary);">
           <svg width="22" height="22" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
           </svg>
           Executive Diagnostic Verdict: Was Your Model Selection Correct?
         </div>
       </div>
-      <div style="font-size: 0.95rem; color: #cbd5e1; line-height: 1.7;">
-        <p style="margin-bottom: 0.8rem;">
-          <strong>Verdict: Partially Correct in outcome, but compromised by multiple critical methodological flaws:</strong>
+      <div style="font-size: 0.96rem; color: var(--text-body); line-height: 1.75;">
+        <p style="margin-bottom: 0.85rem;">
+          <strong style="color: var(--text-main);">Verdict: Partially Correct in outcome, but compromised by multiple critical methodological flaws:</strong>
         </p>
-        <ul style="list-style-position: inside; margin-bottom: 0.8rem;">
+        <ul style="list-style-position: inside; margin-bottom: 0.85rem;">
           <li>In your original notebook, <strong>Logistic Regression</strong> was selected because it recorded <strong>87.07% accuracy</strong>. However, this score was artificially influenced by <strong>data leakage</strong> (re-fitting the scaler on test data) and <strong>feature truncation</strong> (converting <code>Oldpeak</code> float into integer).</li>
           <li>When all bugs were resolved and rigorous 5-Fold Stratified Cross Validation was conducted:
-            <ul style="margin-left: 1.5rem; margin-top: 0.4rem;">
+            <ul style="margin-left: 1.5rem; margin-top: 0.45rem;">
               <li><strong>Random Forest Classifier</strong> achieved the highest overall clinical performance: <strong>89.67% Test Accuracy</strong> and <strong>93.14% Recall (Sensitivity)</strong> with <strong>0.9322 ROC-AUC</strong>.</li>
               <li><strong>Logistic Regression</strong> (tuned with <code>C=5.0</code> and <code>solver='liblinear'</code>) also performed exceptionally well with <strong>88.59% Test Accuracy</strong>, <strong>91.18% Recall</strong>, and <strong>0.9327 ROC-AUC</strong>, while offering clinical coefficient interpretability.</li>
             </ul>
@@ -68,17 +68,17 @@
     </div>
 
     <!-- Comparative Visual Charts -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
-      <div class="card">
-        <div class="card-title" style="margin-bottom: 1rem; font-size: 1rem;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.75rem; margin-bottom: 2.25rem;">
+      <div class="card reveal-lazy">
+        <div class="card-title" style="margin-bottom: 1.25rem; font-size: 1.05rem;">
           Test Accuracy & Recall Comparison (%)
         </div>
         <div style="position: relative; height: 280px;">
           <canvas id="accuracyChart"></canvas>
         </div>
       </div>
-      <div class="card">
-        <div class="card-title" style="margin-bottom: 1rem; font-size: 1rem;">
+      <div class="card reveal-lazy">
+        <div class="card-title" style="margin-bottom: 1.25rem; font-size: 1.05rem;">
           ROC-AUC Discrimination Power
         </div>
         <div style="position: relative; height: 280px;">
@@ -88,7 +88,7 @@
     </div>
 
     <!-- Full Benchmarking Table -->
-    <div class="card" style="margin-bottom: 2.5rem; overflow-x: auto;">
+    <div class="card reveal-lazy" style="margin-bottom: 2.75rem; overflow-x: auto;">
       <div class="card-header">
         <div class="card-title">Rigorous 6-Model Benchmark Suite</div>
         <span style="font-size: 0.8rem; color: var(--text-dim);">Evaluated on 918 Patient Cohort (Stratified Test Set)</span>
@@ -130,9 +130,9 @@
     </div>
 
     <!-- Systematic Autopsy of Notebook Errors -->
-    <div class="card" style="margin-bottom: 2.5rem;">
+    <div class="card reveal-lazy" style="margin-bottom: 2.75rem;">
       <div class="card-header">
-        <div class="card-title" style="color: #f87171;">
+        <div class="card-title" style="color: #e11d48;">
           <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
           </svg>
@@ -142,86 +142,86 @@
 
       <!-- Error 1 -->
       <div class="audit-box">
-        <h4 style="color: #f87171; margin-bottom: 0.4rem;">1. Data Leakage & Test Distribution Corruption via <code>scaler.fit_transform(X_test)</code></h4>
-        <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 0.4rem;">
+        <h4 style="color: #e11d48; font-size: 0.98rem; font-weight: 750; margin-bottom: 0.45rem;">1. Data Leakage &amp; Test Distribution Corruption via <code>scaler.fit_transform(X_test)</code></h4>
+        <p style="font-size: 0.9rem; color: var(--text-main); font-weight: 500; margin-bottom: 0.45rem;">
           In cell 34, you executed:
           <code>x_train_scaled = scaler.fit_transform(X_train)</code> followed by <code>x_test_scaled = scaler.fit_transform(X_test)</code>.
         </p>
-        <p style="font-size: 0.88rem; color: #94a3b8;">
+        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.65;">
           <strong>Why this is wrong:</strong> <code>fit_transform</code> on the test set recalculates the mean (&mu;) and standard deviation (&sigma;) exclusively on the test set instead of applying the learned training distribution. Furthermore, when you did <code>joblib.dump(scaler, 'scaler.pkl')</code>, you saved the test-fitted scaler! In production, single patient requests would be transformed using test sample statistics.
         </p>
       </div>
-      <div class="fix-box" style="margin-top: -0.5rem; margin-bottom: 1.5rem;">
-        <strong style="color: #34d399; font-size: 0.85rem;">The Fix Applied:</strong>
-        <p style="font-size: 0.85rem; color: #cbd5e1;">
+      <div class="fix-box">
+        <strong style="color: #059669; font-size: 0.88rem; font-weight: 750;">The Fix Applied:</strong>
+        <p style="font-size: 0.88rem; color: var(--text-body); line-height: 1.6; margin-top: 0.2rem;">
           Use <code>scaler.transform(X_test)</code> for evaluation. In the full-stack architecture, we encapsulate the scaler inside a scikit-learn <code>ColumnTransformer</code> and unified <code>Pipeline</code> so data leakage is mathematically impossible.
         </p>
       </div>
 
       <!-- Error 2 -->
       <div class="audit-box">
-        <h4 style="color: #f87171; margin-bottom: 0.4rem;">2. Feature Truncation Bug: <code>df_encoded = df_encoded.astype(int)</code></h4>
-        <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 0.4rem;">
+        <h4 style="color: #e11d48; font-size: 0.98rem; font-weight: 750; margin-bottom: 0.45rem;">2. Feature Truncation Bug: <code>df_encoded = df_encoded.astype(int)</code></h4>
+        <p style="font-size: 0.9rem; color: var(--text-main); font-weight: 500; margin-bottom: 0.45rem;">
           In cell 26, you converted the entire dataframe to integer: <code>df_encoded = df_encoded.astype(int)</code>.
         </p>
-        <p style="font-size: 0.88rem; color: #94a3b8;">
+        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.65;">
           <strong>Why this is wrong:</strong> The feature <code>Oldpeak</code> (exercise ST segment depression) is a continuous float (e.g. 1.5 mm, 2.4 mm, -0.5 mm). Converting to <code>int</code> violently truncated values (1.5 became 1, 2.8 became 2). In clinical cardiology, fractional millivolt depressions carry distinct prognostic significance. Truncation destroyed granular predictive signals.
         </p>
       </div>
-      <div class="fix-box" style="margin-top: -0.5rem; margin-bottom: 1.5rem;">
-        <strong style="color: #34d399; font-size: 0.85rem;">The Fix Applied:</strong>
-        <p style="font-size: 0.85rem; color: #cbd5e1;">
+      <div class="fix-box">
+        <strong style="color: #059669; font-size: 0.88rem; font-weight: 750;">The Fix Applied:</strong>
+        <p style="font-size: 0.88rem; color: var(--text-body); line-height: 1.6; margin-top: 0.2rem;">
           Preserve <code>Oldpeak</code> as <code>float64</code> and handle boolean dummy columns properly without cast-truncation.
         </p>
       </div>
 
       <!-- Error 3 -->
       <div class="audit-box">
-        <h4 style="color: #f87171; margin-bottom: 0.4rem;">3. Imputation Data Leakage Before Train/Test Split</h4>
-        <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 0.4rem;">
+        <h4 style="color: #e11d48; font-size: 0.98rem; font-weight: 750; margin-bottom: 0.45rem;">3. Imputation Data Leakage Before Train/Test Split</h4>
+        <p style="font-size: 0.9rem; color: var(--text-main); font-weight: 500; margin-bottom: 0.45rem;">
           In cells 12-15, zero values in <code>Cholesterol</code> and <code>RestingBP</code> were imputed using the entire dataset mean <em>prior</em> to <code>train_test_split</code>.
         </p>
-        <p style="font-size: 0.88rem; color: #94a3b8;">
+        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.65;">
           <strong>Why this is wrong:</strong> Information from test samples leaked into the calculated training mean (244.64 mg/dl). In rigorous machine learning, missing value imputers must be fitted strictly on <code>X_train</code> and applied to <code>X_test</code>.
         </p>
       </div>
-      <div class="fix-box" style="margin-top: -0.5rem; margin-bottom: 1.5rem;">
-        <strong style="color: #34d399; font-size: 0.85rem;">The Fix Applied:</strong>
-        <p style="font-size: 0.85rem; color: #cbd5e1;">
+      <div class="fix-box">
+        <strong style="color: #059669; font-size: 0.88rem; font-weight: 750;">The Fix Applied:</strong>
+        <p style="font-size: 0.88rem; color: var(--text-body); line-height: 1.6; margin-top: 0.2rem;">
           Marked physiological zeros as <code>np.nan</code> and used <code>SimpleImputer(strategy='median')</code> inside the preprocessing pipeline, fitted strictly on training data.
         </p>
       </div>
 
       <!-- Error 4 -->
       <div class="audit-box">
-        <h4 style="color: #f87171; margin-bottom: 0.4rem;">4. Global <code>pd.get_dummies()</code> and Fragile Production Pickles</h4>
-        <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 0.4rem;">
+        <h4 style="color: #e11d48; font-size: 0.98rem; font-weight: 750; margin-bottom: 0.45rem;">4. Global <code>pd.get_dummies()</code> and Fragile Production Pickles</h4>
+        <p style="font-size: 0.9rem; color: var(--text-main); font-weight: 500; margin-bottom: 0.45rem;">
           In cell 24, one-hot encoding was generated using <code>pd.get_dummies(df, drop_first=True)</code> across the entire dataset, saving loose column lists.
         </p>
-        <p style="font-size: 0.88rem; color: #94a3b8;">
+        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.65;">
           <strong>Why this is wrong:</strong> If a single user input in production doesn't match the exact dummy levels, or if an unseen category arrives, <code>pd.get_dummies()</code> creates mismatched shapes, throwing matrix dimension errors.
         </p>
       </div>
-      <div class="fix-box" style="margin-top: -0.5rem; margin-bottom: 1.5rem;">
-        <strong style="color: #34d399; font-size: 0.85rem;">The Fix Applied:</strong>
-        <p style="font-size: 0.85rem; color: #cbd5e1;">
+      <div class="fix-box">
+        <strong style="color: #059669; font-size: 0.88rem; font-weight: 750;">The Fix Applied:</strong>
+        <p style="font-size: 0.88rem; color: var(--text-body); line-height: 1.6; margin-top: 0.2rem;">
           Used <code>OneHotEncoder(categories=..., drop='first', handle_unknown='ignore')</code> inside <code>ColumnTransformer</code>. Now the pipeline reliably processes single JSON records or batch DataFrames with guaranteed schema consistency.
         </p>
       </div>
 
       <!-- Error 5 -->
       <div class="audit-box">
-        <h4 style="color: #f87171; margin-bottom: 0.4rem;">5. Single Unstratified Split (32% Test Size) Without Cross Validation</h4>
-        <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 0.4rem;">
+        <h4 style="color: #e11d48; font-size: 0.98rem; font-weight: 750; margin-bottom: 0.45rem;">5. Single Unstratified Split (32% Test Size) Without Cross Validation</h4>
+        <p style="font-size: 0.9rem; color: var(--text-main); font-weight: 500; margin-bottom: 0.45rem;">
           In cell 33, <code>train_test_split(X, y, test_size=0.320, random_state=42)</code> was executed without stratification or K-Fold CV.
         </p>
-        <p style="font-size: 0.88rem; color: #94a3b8;">
+        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.65;">
           <strong>Why this is wrong:</strong> A single random split can result in lucky or unlucky test distributions. Furthermore, no hyperparameter tuning was conducted for Logistic Regression, SVM, or ensemble methods.
         </p>
       </div>
-      <div class="fix-box" style="margin-top: -0.5rem; margin-bottom: 0.5rem;">
-        <strong style="color: #34d399; font-size: 0.85rem;">The Fix Applied:</strong>
-        <p style="font-size: 0.85rem; color: #cbd5e1;">
+      <div class="fix-box">
+        <strong style="color: #059669; font-size: 0.88rem; font-weight: 750;">The Fix Applied:</strong>
+        <p style="font-size: 0.88rem; color: var(--text-body); line-height: 1.6; margin-top: 0.2rem;">
           Implemented 5-Fold Stratified Cross Validation with comprehensive <code>GridSearchCV</code>, optimizing both ROC-AUC and Recall.
         </p>
       </div>
@@ -235,7 +235,7 @@
   </footer>
 
   <script>
-    // Render Charts
+    // Render Charts with Light Pastel Theme
     const benchmarkData = {{ benchmarks|tojson }};
     const modelLabels = Object.keys(benchmarkData);
     const accuracyValues = modelLabels.map(m => (benchmarkData[m].test_accuracy * 100).toFixed(1));
@@ -252,16 +252,18 @@
           {
             label: 'Accuracy (%)',
             data: accuracyValues,
-            backgroundColor: 'rgba(56, 189, 248, 0.7)',
-            borderColor: '#38bdf8',
-            borderWidth: 1
+            backgroundColor: 'rgba(99, 102, 241, 0.75)',
+            borderColor: '#4f46e5',
+            borderWidth: 1.5,
+            borderRadius: 6
           },
           {
             label: 'Recall / Sensitivity (%)',
             data: recallValues,
-            backgroundColor: 'rgba(16, 185, 129, 0.7)',
-            borderColor: '#10b981',
-            borderWidth: 1
+            backgroundColor: 'rgba(16, 185, 129, 0.75)',
+            borderColor: '#059669',
+            borderWidth: 1.5,
+            borderRadius: 6
           }
         ]
       },
@@ -272,16 +274,16 @@
           y: {
             min: 70,
             max: 100,
-            grid: { color: 'rgba(255, 255, 255, 0.05)' },
-            ticks: { color: '#94a3b8' }
+            grid: { color: 'rgba(226, 232, 240, 0.8)' },
+            ticks: { color: '#64748b', font: { weight: '600' } }
           },
           x: {
             grid: { display: false },
-            ticks: { color: '#94a3b8', font: { size: 10 } }
+            ticks: { color: '#475569', font: { weight: '600', size: 11 } }
           }
         },
         plugins: {
-          legend: { labels: { color: '#f8fafc' } }
+          legend: { labels: { color: '#0f172a', font: { weight: '700' } } }
         }
       }
     });
@@ -295,9 +297,10 @@
         datasets: [{
           label: 'ROC-AUC Score',
           data: aucValues,
-          backgroundColor: 'rgba(168, 85, 247, 0.7)',
-          borderColor: '#a855f7',
-          borderWidth: 1
+          backgroundColor: 'rgba(168, 85, 247, 0.75)',
+          borderColor: '#7c3aed',
+          borderWidth: 1.5,
+          borderRadius: 6
         }]
       },
       options: {
@@ -307,17 +310,35 @@
           y: {
             min: 0.80,
             max: 1.0,
-            grid: { color: 'rgba(255, 255, 255, 0.05)' },
-            ticks: { color: '#94a3b8' }
+            grid: { color: 'rgba(226, 232, 240, 0.8)' },
+            ticks: { color: '#64748b', font: { weight: '600' } }
           },
           x: {
             grid: { display: false },
-            ticks: { color: '#94a3b8', font: { size: 10 } }
+            ticks: { color: '#475569', font: { weight: '600', size: 11 } }
           }
         },
         plugins: {
-          legend: { labels: { color: '#f8fafc' } }
+          legend: { labels: { color: '#0f172a', font: { weight: '700' } } }
         }
+      }
+    });
+
+    // Progressive Lazy Reveal on Scroll
+    document.addEventListener('DOMContentLoaded', () => {
+      const lazyCards = document.querySelectorAll('.reveal-lazy');
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.05 });
+        lazyCards.forEach(c => observer.observe(c));
+      } else {
+        lazyCards.forEach(c => c.classList.add('is-revealed'));
       }
     });
   </script>

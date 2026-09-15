@@ -19,9 +19,8 @@ BENCHMARK_PATH = os.path.join(BASE_DIR, "models", "benchmark_metrics.json")
 
 class HeartDiseasePredictor:
     def __init__(self, pipeline_path: str = PIPELINE_PATH):
-        if not os.path.exists(pipeline_path):
-            raise FileNotFoundError(f"Model pipeline not found at {pipeline_path}. Run train_pipeline.py first.")
-        self.pipeline = joblib.load(pipeline_path)
+        self.pipeline_path = pipeline_path
+        self.pipeline = self._load_or_build_pipeline()
         
         self.metadata = {}
         if os.path.exists(METADATA_PATH):
@@ -32,6 +31,104 @@ class HeartDiseasePredictor:
         if os.path.exists(BENCHMARK_PATH):
             with open(BENCHMARK_PATH, "r") as f:
                 self.benchmarks = json.load(f)
+
+    def _patch_imputer(self, pipeline):
+        """Fixes cross-version scikit-learn unpickling differences (e.g. _fill_dtype in scikit-learn 1.8+)."""
+        try:
+            preprocessor = pipeline.named_steps.get("preprocessor")
+            if preprocessor:
+                num_trans = preprocessor.named_transformers_.get("num")
+                if num_trans:
+                    imputer = num_trans.named_steps.get("imputer")
+                    if imputer and not hasattr(imputer, "_fill_dtype"):
+                        imputer._fill_dtype = getattr(imputer, "_fit_dtype", np.float64)
+        except Exception:
+            pass
+
+    def _load_or_build_pipeline(self):
+        """Loads pipeline or builds and fits it in current environment if version mismatch occurs."""
+        dummy_test_row = pd.DataFrame([{
+            "Age": 54, "Sex": "M", "ChestPainType": "ASY", "RestingBP": 130,
+            "Cholesterol": 230, "FastingBS": 0, "RestingECG": "Normal",
+            "MaxHR": 145, "ExerciseAngina": "N", "Oldpeak": 1.2, "ST_Slope": "Flat"
+        }])
+
+        if os.path.exists(self.pipeline_path):
+            try:
+                pipeline = joblib.load(self.pipeline_path)
+                self._patch_imputer(pipeline)
+                # Verify pipeline works in current environment
+                pipeline.predict_proba(dummy_test_row)
+                return pipeline
+            except Exception as e:
+                print(f"Loaded pipeline incompatible with host scikit-learn ({e}). Re-fitting natively...")
+
+        # Build and fit natively in current environment
+        return self._build_and_fit_pipeline()
+
+    def _build_and_fit_pipeline(self):
+        from sklearn.compose import ColumnTransformer
+        from sklearn.impute import SimpleImputer
+        from sklearn.pipeline import Pipeline
+        from sklearn.preprocessing import OneHotEncoder, StandardScaler
+        from sklearn.ensemble import RandomForestClassifier
+
+        DATA_PATH = os.path.join(BASE_DIR, "heart.csv")
+        df = pd.read_csv(DATA_PATH)
+        df["RestingBP"] = df["RestingBP"].replace(0, np.nan)
+        df["Cholesterol"] = df["Cholesterol"].replace(0, np.nan)
+        df["Oldpeak"] = df["Oldpeak"].astype(float)
+
+        X = df.drop("HeartDisease", axis=1)
+        y = df["HeartDisease"]
+
+        num_cols = ["Age", "RestingBP", "Cholesterol", "FastingBS", "MaxHR", "Oldpeak"]
+        cat_cols = ["Sex", "ChestPainType", "RestingECG", "ExerciseAngina", "ST_Slope"]
+        cat_options = {
+            "Sex": ["M", "F"],
+            "ChestPainType": ["ATA", "NAP", "ASY", "TA"],
+            "RestingECG": ["Normal", "ST", "LVH"],
+            "ExerciseAngina": ["N", "Y"],
+            "ST_Slope": ["Up", "Flat", "Down"]
+        }
+
+        num_pipeline = Pipeline([
+            ("imputer", SimpleImputer(strategy="median")),
+            ("scaler", StandardScaler())
+        ])
+
+        cat_pipeline = Pipeline([
+            ("encoder", OneHotEncoder(
+                categories=[cat_options[c] for c in cat_cols],
+                drop="first",
+                handle_unknown="ignore",
+                sparse_output=False
+            ))
+        ])
+
+        preprocessor = ColumnTransformer(
+            transformers=[
+                ("num", num_pipeline, num_cols),
+                ("cat", cat_pipeline, cat_cols)
+            ],
+            remainder="drop"
+        )
+
+        pipeline = Pipeline([
+            ("preprocessor", preprocessor),
+            ("classifier", RandomForestClassifier(n_estimators=200, min_samples_split=5, random_state=42))
+        ])
+
+        pipeline.fit(X, y)
+        self._patch_imputer(pipeline)
+
+        try:
+            joblib.dump(pipeline, self.pipeline_path)
+            print("Successfully fitted and saved native production pipeline to:", self.pipeline_path)
+        except Exception:
+            pass
+
+        return pipeline
 
     def analyze_factors(self, data: Dict[str, Any]) -> Dict[str, List[str]]:
         """Identifies key clinical warning signs and protective attributes."""

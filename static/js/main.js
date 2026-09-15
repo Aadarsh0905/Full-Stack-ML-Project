@@ -45,6 +45,40 @@ const PRESETS = {
   }
 };
 
+function getAgeCategory(val) {
+  const age = parseInt(val, 10);
+  if (isNaN(age)) return "Age Range: 18–100 yrs";
+  if (age <= 35) return "Young Adult (18–35)";
+  if (age <= 55) return "Middle-Aged Adult (36–55)";
+  if (age <= 70) return "Senior Adult (56–70)";
+  return "Geriatric Patient (71+)";
+}
+
+function applyAge(val) {
+  const age = Math.min(100, Math.max(18, parseInt(val, 10) || 54));
+  const ageInput = document.getElementById("Age");
+  const ageSlider = document.getElementById("ageSlider");
+  const ageDisplayNum = document.getElementById("ageDisplayNum");
+  const ageCategoryTag = document.getElementById("ageCategoryTag");
+
+  if (ageInput) ageInput.value = age;
+  if (ageSlider) ageSlider.value = age;
+  if (ageDisplayNum) ageDisplayNum.textContent = age;
+  if (ageCategoryTag) ageCategoryTag.textContent = getAgeCategory(age);
+
+  // Update active pill chip
+  document.querySelectorAll(".age-pill-chip").forEach((btn) => {
+    const btnAge = parseInt(btn.textContent, 10);
+    btn.classList.toggle("active-age-chip", btnAge === age);
+  });
+}
+
+function stepAge(delta) {
+  const ageInput = document.getElementById("Age");
+  const current = parseInt(ageInput?.value || 54, 10);
+  applyAge(current + delta);
+}
+
 function loadPreset(presetKey) {
   const data = PRESETS[presetKey];
   if (!data) return;
@@ -54,6 +88,11 @@ function loadPreset(presetKey) {
     if (el) {
       el.value = value;
     }
+  }
+
+  // Synchronize modern age widget
+  if (data.Age) {
+    applyAge(data.Age);
   }
 
   // Trigger quick subtle highlight
@@ -73,6 +112,30 @@ document.addEventListener("DOMContentLoaded", () => {
   const resultContent = document.getElementById("resultContent");
   const errorAlert = document.getElementById("errorAlert");
   const submitBtn = document.getElementById("submitBtn");
+
+  // Wire up Age Slider and Stepper
+  const ageSlider = document.getElementById("ageSlider");
+  const ageInput = document.getElementById("Age");
+
+  if (ageSlider) {
+    ageSlider.addEventListener("input", (e) => {
+      applyAge(e.target.value);
+    });
+  }
+
+  if (ageInput) {
+    ageInput.addEventListener("input", (e) => {
+      const val = parseInt(e.target.value, 10);
+      if (!isNaN(val)) {
+        applyAge(val);
+      }
+    });
+  }
+
+  // Set initial age display state
+  if (ageInput && ageInput.value) {
+    applyAge(ageInput.value);
+  }
 
   if (form) {
     form.addEventListener("submit", async (e) => {

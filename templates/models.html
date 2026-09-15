@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Model Benchmarks & Technical Error Audit - CardioSense AI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <nav class="navbar">
+    <a href="/" class="nav-brand">
+      <div class="brand-icon">
+        <svg width="22" height="22" fill="white" viewBox="0 0 24 24">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+      </div>
+      <span>CardioSense<span style="color: #38bdf8;">AI</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="/">Patient Assessment</a>
+      <a href="/models" class="active">Model Benchmarks & Error Audit</a>
+      <a href="/api-docs">REST API Docs</a>
+      <div class="nav-badge">
+        <div class="status-dot"></div>
+        <span>Best Model: {{ metadata.get('best_model_name', 'Random Forest') }}</span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <header class="hero-section">
+      <div class="hero-tag">Clinical Machine Learning Audit</div>
+      <h1 class="hero-title">Model Benchmarks & Code Error Autopsy</h1>
+      <p class="hero-desc">
+        Comprehensive performance comparison across 6 algorithms with 5-Fold Stratified Cross Validation, hyperparameter grid search, and systematic audit of the notebook pipeline.
+      </p>
+    </header>
+
+    <!-- Executive Answer Box -->
+    <div class="card" style="margin-bottom: 2rem; border-color: rgba(56, 189, 248, 0.4); background: linear-gradient(180deg, rgba(14, 30, 64, 0.85) 0%, rgba(11, 19, 41, 0.9) 100%);">
+      <div class="card-header">
+        <div class="card-title" style="color: #38bdf8;">
+          <svg width="22" height="22" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+          </svg>
+          Executive Diagnostic Verdict: Was Your Model Selection Correct?
+        </div>
+      </div>
+      <div style="font-size: 0.95rem; color: #cbd5e1; line-height: 1.7;">
+        <p style="margin-bottom: 0.8rem;">
+          <strong>Verdict: Partially Correct in outcome, but compromised by multiple critical methodological flaws:</strong>
+        </p>
+        <ul style="list-style-position: inside; margin-bottom: 0.8rem;">
+          <li>In your original notebook, <strong>Logistic Regression</strong> was selected because it recorded <strong>87.07% accuracy</strong>. However, this score was artificially influenced by <strong>data leakage</strong> (re-fitting the scaler on test data) and <strong>feature truncation</strong> (converting <code>Oldpeak</code> float into integer).</li>
+          <li>When all bugs were resolved and rigorous 5-Fold Stratified Cross Validation was conducted:
+            <ul style="margin-left: 1.5rem; margin-top: 0.4rem;">
+              <li><strong>Random Forest Classifier</strong> achieved the highest overall clinical performance: <strong>89.67% Test Accuracy</strong> and <strong>93.14% Recall (Sensitivity)</strong> with <strong>0.9322 ROC-AUC</strong>.</li>
+              <li><strong>Logistic Regression</strong> (tuned with <code>C=5.0</code> and <code>solver='liblinear'</code>) also performed exceptionally well with <strong>88.59% Test Accuracy</strong>, <strong>91.18% Recall</strong>, and <strong>0.9327 ROC-AUC</strong>, while offering clinical coefficient interpretability.</li>
+            </ul>
+          </li>
+          <li>For medical applications, <strong>Recall (Sensitivity)</strong> is paramount: missing a sick heart patient is far more hazardous than a false positive. The tuned models detect over 93% of positive cases compared to ~85% in the uncorrected pipeline.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Comparative Visual Charts -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+      <div class="card">
+        <div class="card-title" style="margin-bottom: 1rem; font-size: 1rem;">
+          Test Accuracy & Recall Comparison (%)
+        </div>
+        <div style="position: relative; height: 280px;">
+          <canvas id="accuracyChart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom: 1rem; font-size: 1rem;">
+          ROC-AUC Discrimination Power
+        </div>
+        <div style="position: relative; height: 280px;">
+          <canvas id="aucChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Full Benchmarking Table -->
+    <div class="card" style="margin-bottom: 2.5rem; overflow-x: auto;">
+      <div class="card-header">
+        <div class="card-title">Rigorous 6-Model Benchmark Suite</div>
+        <span style="font-size: 0.8rem; color: var(--text-dim);">Evaluated on 918 Patient Cohort (Stratified Test Set)</span>
+      </div>
+
+      <table class="styled-table">
+        <thead>
+          <tr>
+            <th>Model Algorithm</th>
+            <th>Accuracy</th>
+            <th>Recall (Sensitivity)</th>
+            <th>Precision</th>
+            <th>F1-Score</th>
+            <th>ROC-AUC</th>
+            <th>Optimal Hyperparameters</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for name, m in benchmarks.items() %}
+          <tr>
+            <td>
+              <strong>{{ name }}</strong>
+              {% if name == metadata.get('best_model_name') %}
+                <span class="badge-winner">Production Champion</span>
+              {% endif %}
+            </td>
+            <td><strong>{{ (m.test_accuracy * 100)|round(2) }}%</strong></td>
+            <td style="color: #34d399;"><strong>{{ (m.test_recall * 100)|round(2) }}%</strong></td>
+            <td>{{ (m.test_precision * 100)|round(2) }}%</td>
+            <td>{{ (m.test_f1 * 100)|round(2) }}%</td>
+            <td>{{ m.test_roc_auc }}</td>
+            <td style="font-family: monospace; font-size: 0.75rem; color: var(--text-dim);">
+              {{ m.best_params }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Systematic Autopsy of Notebook Errors -->
+    <div class="card" style="margin-bottom: 2.5rem;">
+      <div class="card-header">
+        <div class="card-title" style="color: #f87171;">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+          </svg>
+          Technical Autopsy: The 5 Critical Errors in Original Notebook
+        </div>
+      </div>
+
+      <!-- Error 1 -->
+      <div class="audit-box">
+        <h4 style="color: #f87171; margin-bottom: 0.4rem;">1. Data Leakage & Test Distribution Corruption via <code>scaler.fit_transform(X_test)</code></h4>
+        <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 0.4rem;">
+          In cell 34, you executed:
+          <code>x_train_scaled = scaler.fit_transform(X_train)</code> followed by <code>x_test_scaled = scaler.fit_transform(X_test)</code>.
+        </p>
+        <p style="font-size: 0.88rem; color: #94a3b8;">
+          <strong>Why this is wrong:</strong> <code>fit_transform</code> on the test set recalculates the mean (&mu;) and standard deviation (&sigma;) exclusively on the test set instead of applying the learned training distribution. Furthermore, when you did <code>joblib.dump(scaler, 'scaler.pkl')</code>, you saved the test-fitted scaler! In production, single patient requests would be transformed using test sample statistics.
+        </p>
+      </div>
+      <div class="fix-box" style="margin-top: -0.5rem; margin-bottom: 1.5rem;">
+        <strong style="color: #34d399; font-size: 0.85rem;">The Fix Applied:</strong>
+        <p style="font-size: 0.85rem; color: #cbd5e1;">
+          Use <code>scaler.transform(X_test)</code> for evaluation. In the full-stack architecture, we encapsulate the scaler inside a scikit-learn <code>ColumnTransformer</code> and unified <code>Pipeline</code> so data leakage is mathematically impossible.
+        </p>
+      </div>
+
+      <!-- Error 2 -->
+      <div class="audit-box">
+        <h4 style="color: #f87171; margin-bottom: 0.4rem;">2. Feature Truncation Bug: <code>df_encoded = df_encoded.astype(int)</code></h4>
+        <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 0.4rem;">
+          In cell 26, you converted the entire dataframe to integer: <code>df_encoded = df_encoded.astype(int)</code>.
+        </p>
+        <p style="font-size: 0.88rem; color: #94a3b8;">
+          <strong>Why this is wrong:</strong> The feature <code>Oldpeak</code> (exercise ST segment depression) is a continuous float (e.g. 1.5 mm, 2.4 mm, -0.5 mm). Converting to <code>int</code> violently truncated values (1.5 became 1, 2.8 became 2). In clinical cardiology, fractional millivolt depressions carry distinct prognostic significance. Truncation destroyed granular predictive signals.
+        </p>
+      </div>
+      <div class="fix-box" style="margin-top: -0.5rem; margin-bottom: 1.5rem;">
+        <strong style="color: #34d399; font-size: 0.85rem;">The Fix Applied:</strong>
+        <p style="font-size: 0.85rem; color: #cbd5e1;">
+          Preserve <code>Oldpeak</code> as <code>float64</code> and handle boolean dummy columns properly without cast-truncation.
+        </p>
+      </div>
+
+      <!-- Error 3 -->
+      <div class="audit-box">
+        <h4 style="color: #f87171; margin-bottom: 0.4rem;">3. Imputation Data Leakage Before Train/Test Split</h4>
+        <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 0.4rem;">
+          In cells 12-15, zero values in <code>Cholesterol</code> and <code>RestingBP</code> were imputed using the entire dataset mean <em>prior</em> to <code>train_test_split</code>.
+        </p>
+        <p style="font-size: 0.88rem; color: #94a3b8;">
+          <strong>Why this is wrong:</strong> Information from test samples leaked into the calculated training mean (244.64 mg/dl). In rigorous machine learning, missing value imputers must be fitted strictly on <code>X_train</code> and applied to <code>X_test</code>.
+        </p>
+      </div>
+      <div class="fix-box" style="margin-top: -0.5rem; margin-bottom: 1.5rem;">
+        <strong style="color: #34d399; font-size: 0.85rem;">The Fix Applied:</strong>
+        <p style="font-size: 0.85rem; color: #cbd5e1;">
+          Marked physiological zeros as <code>np.nan</code> and used <code>SimpleImputer(strategy='median')</code> inside the preprocessing pipeline, fitted strictly on training data.
+        </p>
+      </div>
+
+      <!-- Error 4 -->
+      <div class="audit-box">
+        <h4 style="color: #f87171; margin-bottom: 0.4rem;">4. Global <code>pd.get_dummies()</code> and Fragile Production Pickles</h4>
+        <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 0.4rem;">
+          In cell 24, one-hot encoding was generated using <code>pd.get_dummies(df, drop_first=True)</code> across the entire dataset, saving loose column lists.
+        </p>
+        <p style="font-size: 0.88rem; color: #94a3b8;">
+          <strong>Why this is wrong:</strong> If a single user input in production doesn't match the exact dummy levels, or if an unseen category arrives, <code>pd.get_dummies()</code> creates mismatched shapes, throwing matrix dimension errors.
+        </p>
+      </div>
+      <div class="fix-box" style="margin-top: -0.5rem; margin-bottom: 1.5rem;">
+        <strong style="color: #34d399; font-size: 0.85rem;">The Fix Applied:</strong>
+        <p style="font-size: 0.85rem; color: #cbd5e1;">
+          Used <code>OneHotEncoder(categories=..., drop='first', handle_unknown='ignore')</code> inside <code>ColumnTransformer</code>. Now the pipeline reliably processes single JSON records or batch DataFrames with guaranteed schema consistency.
+        </p>
+      </div>
+
+      <!-- Error 5 -->
+      <div class="audit-box">
+        <h4 style="color: #f87171; margin-bottom: 0.4rem;">5. Single Unstratified Split (32% Test Size) Without Cross Validation</h4>
+        <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 0.4rem;">
+          In cell 33, <code>train_test_split(X, y, test_size=0.320, random_state=42)</code> was executed without stratification or K-Fold CV.
+        </p>
+        <p style="font-size: 0.88rem; color: #94a3b8;">
+          <strong>Why this is wrong:</strong> A single random split can result in lucky or unlucky test distributions. Furthermore, no hyperparameter tuning was conducted for Logistic Regression, SVM, or ensemble methods.
+        </p>
+      </div>
+      <div class="fix-box" style="margin-top: -0.5rem; margin-bottom: 0.5rem;">
+        <strong style="color: #34d399; font-size: 0.85rem;">The Fix Applied:</strong>
+        <p style="font-size: 0.85rem; color: #cbd5e1;">
+          Implemented 5-Fold Stratified Cross Validation with comprehensive <code>GridSearchCV</code>, optimizing both ROC-AUC and Recall.
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+  <footer>
+    <p>CardioSense AI &bull; Full-Stack Healthcare Machine Learning Pipeline &bull; Developed with Scikit-Learn &amp; Flask</p>
+  </footer>
+
+  <script>
+    // Render Charts
+    const benchmarkData = {{ benchmarks|tojson }};
+    const modelLabels = Object.keys(benchmarkData);
+    const accuracyValues = modelLabels.map(m => (benchmarkData[m].test_accuracy * 100).toFixed(1));
+    const recallValues = modelLabels.map(m => (benchmarkData[m].test_recall * 100).toFixed(1));
+    const aucValues = modelLabels.map(m => benchmarkData[m].test_roc_auc);
+
+    // Chart 1: Accuracy & Recall
+    const ctxAcc = document.getElementById('accuracyChart').getContext('2d');
+    new Chart(ctxAcc, {
+      type: 'bar',
+      data: {
+        labels: modelLabels,
+        datasets: [
+          {
+            label: 'Accuracy (%)',
+            data: accuracyValues,
+            backgroundColor: 'rgba(56, 189, 248, 0.7)',
+            borderColor: '#38bdf8',
+            borderWidth: 1
+          },
+          {
+            label: 'Recall / Sensitivity (%)',
+            data: recallValues,
+            backgroundColor: 'rgba(16, 185, 129, 0.7)',
+            borderColor: '#10b981',
+            borderWidth: 1
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            min: 70,
+            max: 100,
+            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+            ticks: { color: '#94a3b8' }
+          },
+          x: {
+            grid: { display: false },
+            ticks: { color: '#94a3b8', font: { size: 10 } }
+          }
+        },
+        plugins: {
+          legend: { labels: { color: '#f8fafc' } }
+        }
+      }
+    });
+
+    // Chart 2: ROC-AUC
+    const ctxAuc = document.getElementById('aucChart').getContext('2d');
+    new Chart(ctxAuc, {
+      type: 'bar',
+      data: {
+        labels: modelLabels,
+        datasets: [{
+          label: 'ROC-AUC Score',
+          data: aucValues,
+          backgroundColor: 'rgba(168, 85, 247, 0.7)',
+          borderColor: '#a855f7',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            min: 0.80,
+            max: 1.0,
+            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+            ticks: { color: '#94a3b8' }
+          },
+          x: {
+            grid: { display: false },
+            ticks: { color: '#94a3b8', font: { size: 10 } }
+          }
+        },
+        plugins: {
+          legend: { labels: { color: '#f8fafc' } }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

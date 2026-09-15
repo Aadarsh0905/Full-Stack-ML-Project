@@ -1,0 +1,88 @@
+{
+  "numerical_cols": [
+    "Age",
+    "RestingBP",
+    "Cholesterol",
+    "FastingBS",
+    "MaxHR",
+    "Oldpeak"
+  ],
+  "categorical_cols": [
+    "Sex",
+    "ChestPainType",
+    "RestingECG",
+    "ExerciseAngina",
+    "ST_Slope"
+  ],
+  "categorical_options": {
+    "Sex": [
+      "M",
+      "F"
+    ],
+    "ChestPainType": [
+      "ATA",
+      "NAP",
+      "ASY",
+      "TA"
+    ],
+    "RestingECG": [
+      "Normal",
+      "ST",
+      "LVH"
+    ],
+    "ExerciseAngina": [
+      "N",
+      "Y"
+    ],
+    "ST_Slope": [
+      "Up",
+      "Flat",
+      "Down"
+    ]
+  },
+  "encoded_feature_names": [
+    "Age",
+    "RestingBP",
+    "Cholesterol",
+    "FastingBS",
+    "MaxHR",
+    "Oldpeak",
+    "Sex_F",
+    "ChestPainType_NAP",
+    "ChestPainType_ASY",
+    "ChestPainType_TA",
+    "RestingECG_ST",
+    "RestingECG_LVH",
+    "ExerciseAngina_Y",
+    "ST_Slope_Flat",
+    "ST_Slope_Down"
+  ],
+  "best_model_name": "Random Forest",
+  "best_hyperparams": {
+    "max_depth": 8,
+    "min_samples_split": 5,
+    "n_estimators": 200
+  },
+  "dataset_summary": {
+    "total_samples": 918,
+    "positive_cases": 508,
+    "negative_cases": 410
+  },
+  "feature_weights": {
+    "Age": 0.0703,
+    "RestingBP": 0.0543,
+    "Cholesterol": 0.0673,
+    "FastingBS": 0.0316,
+    "MaxHR": 0.1149,
+    "Oldpeak": 0.1144,
+    "Sex_F": 0.0369,
+    "ChestPainType_NAP": 0.015,
+    "ChestPainType_ASY": 0.1385,
+    "ChestPainType_TA": 0.0076,
+    "RestingECG_ST": 0.0082,
+    "RestingECG_LVH": 0.0135,
+    "ExerciseAngina_Y": 0.103,
+    "ST_Slope_Flat": 0.2069,
+    "ST_Slope_Down": 0.0178
+  }
+}

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REST API Documentation - CardioSense AI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    pre {
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      padding: 1rem;
+      overflow-x: auto;
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: 0.82rem;
+      color: #38bdf8;
+      margin: 0.5rem 0 1.25rem;
+    }
+    code {
+      color: #38bdf8;
+    }
+    .endpoint-badge {
+      display: inline-block;
+      font-weight: 700;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      margin-right: 0.5rem;
+    }
+    .badge-post { background: rgba(37, 99, 235, 0.3); color: #60a5fa; border: 1px solid #3b82f6; }
+    .badge-get { background: rgba(16, 185, 129, 0.3); color: #34d399; border: 1px solid #10b981; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <nav class="navbar">
+    <a href="/" class="nav-brand">
+      <div class="brand-icon">
+        <svg width="22" height="22" fill="white" viewBox="0 0 24 24">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+      </div>
+      <span>CardioSense<span style="color: #38bdf8;">AI</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="/">Patient Assessment</a>
+      <a href="/models">Model Benchmarks & Error Audit</a>
+      <a href="/api-docs" class="active">REST API Docs</a>
+      <div class="nav-badge">
+        <div class="status-dot"></div>
+        <span>REST API v1.0.0</span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <header class="hero-section">
+      <div class="hero-tag">Developer & Hospital Integration</div>
+      <h1 class="hero-title">RESTful Inference API Documentation</h1>
+      <p class="hero-desc">
+        Integrate cardiovascular diagnostic machine learning inference directly into Electronic Health Record (EHR) systems, hospital software, or mobile applications.
+      </p>
+    </header>
+
+    <!-- Health Check -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <div class="card-header">
+        <div class="card-title">
+          <span class="endpoint-badge badge-get">GET</span>
+          <code>/api/health</code>
+        </div>
+        <span style="font-size: 0.8rem; color: var(--text-dim);">System Liveness & Model Status</span>
+      </div>
+      <p style="font-size: 0.88rem; color: var(--text-muted);">
+        Returns server uptime, operational status, and active production model name.
+      </p>
+      <pre>
+curl -X GET http://127.0.0.1:5000/api/health
+      </pre>
+      <div style="font-size: 0.8rem; font-weight: 600; color: #fff; margin-bottom: 0.2rem;">Sample Response (200 OK):</div>
+      <pre>
+{
+  "model_loaded": "Random Forest",
+  "service": "CardioSense Heart Disease Prediction API",
+  "status": "healthy",
+  "version": "1.0.0"
+}
+      </pre>
+    </div>
+
+    <!-- Predict Endpoint -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <div class="card-header">
+        <div class="card-title">
+          <span class="endpoint-badge badge-post">POST</span>
+          <code>/api/predict</code>
+        </div>
+        <span style="font-size: 0.8rem; color: var(--text-dim);">Single Patient Risk Scoring</span>
+      </div>
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+        Takes a JSON payload containing 11 clinical biomarkers and returns probability percentage, risk tier, diagnostic summary, and individual contributing factors.
+      </p>
+      <pre>
+curl -X POST http://127.0.0.1:5000/api/predict \
+  -H "Content-Type: application/json" \
+  -d '{
+    "Age": 58,
+    "Sex": "M",
+    "ChestPainType": "ASY",
+    "RestingBP": 140,
+    "Cholesterol": 240,
+    "FastingBS": 1,
+    "RestingECG": "ST",
+    "MaxHR": 130,
+    "ExerciseAngina": "Y",
+    "Oldpeak": 2.0,
+    "ST_Slope": "Flat"
+  }'
+      </pre>
+      <div style="font-size: 0.8rem; font-weight: 600; color: #fff; margin-bottom: 0.2rem;">Sample Response (200 OK):</div>
+      <pre>
+{
+  "success": true,
+  "data": {
+    "prediction": 1,
+    "prediction_label": "Heart Disease Detected",
+    "probability_percent": 96.8,
+    "probability_healthy_percent": 3.2,
+    "risk_tier": "HIGH",
+    "badge_color": "danger",
+    "clinical_summary": "High probability of coronary heart disease detected by diagnostic indicators.",
+    "action_plan": "Immediate cardiologist consultation, diagnostic echocardiogram or coronary angiography strongly advised.",
+    "risk_factors": [
+      "Flat ST Slope during peak exercise (common sign of myocardial ischemia)",
+      "Exercise-induced angina present (chest pain during physical exertion)",
+      "Asymptomatic chest pain type (historically high correlation with silent CAD)",
+      "Elevated ST depression Oldpeak (2.0 mm) indicates significant ischemic response",
+      "Fasting blood sugar > 120 mg/dl (hyperglycemia increases cardiovascular risk)"
+    ],
+    "protective_factors": [],
+    "model_name": "Random Forest"
+  }
+}
+      </pre>
+    </div>
+
+    <!-- Batch Predict Endpoint -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <div class="card-header">
+        <div class="card-title">
+          <span class="endpoint-badge badge-post">POST</span>
+          <code>/api/batch-predict</code>
+        </div>
+        <span style="font-size: 0.8rem; color: var(--text-dim);">Multi-Patient Cohort Assessment</span>
+      </div>
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+        Accepts a multipart CSV upload or JSON list of patients to process hundreds of records synchronously.
+      </p>
+      <pre>
+# Via CSV file upload:
+curl -X POST http://127.0.0.1:5000/api/batch-predict \
+  -F "file=@patients_cohort.csv"
+      </pre>
+    </div>
+
+    <!-- Models Endpoint -->
+    <div class="card" style="margin-bottom: 2rem;">
+      <div class="card-header">
+        <div class="card-title">
+          <span class="endpoint-badge badge-get">GET</span>
+          <code>/api/models</code>
+        </div>
+        <span style="font-size: 0.8rem; color: var(--text-dim);">Benchmark Comparison Metrics</span>
+      </div>
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+        Returns full benchmarking data, confusion matrices, and optimal hyperparameters across all evaluated ML algorithms.
+      </p>
+      <pre>
+curl -X GET http://127.0.0.1:5000/api/models
+      </pre>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>CardioSense AI &bull; Full-Stack Healthcare Machine Learning Pipeline &bull; Developed with Scikit-Learn &amp; Flask</p>
+  </footer>
+</body>
+</html>

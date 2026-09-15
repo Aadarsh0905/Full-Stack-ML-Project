@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CardioSense AI - Clinical Heart Disease Risk Predictor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <nav class="navbar">
+    <a href="/" class="nav-brand">
+      <div class="brand-icon">
+        <svg width="22" height="22" fill="white" viewBox="0 0 24 24">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+      </div>
+      <span>CardioSense<span style="color: #38bdf8;">AI</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="/" class="active">Patient Assessment</a>
+      <a href="/models">Model Benchmarks & Error Audit</a>
+      <a href="/api-docs">REST API Docs</a>
+      <div class="nav-badge">
+        <div class="status-dot"></div>
+        <span>Production Model: {{ metadata.get('best_model_name', 'Random Forest') }}</span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Hero Header -->
+    <header class="hero-section">
+      <div class="hero-tag">Clinical Diagnostic Intelligence</div>
+      <h1 class="hero-title">Cardiovascular Disease Risk Prediction</h1>
+      <p class="hero-desc">
+        Full-stack machine learning clinical decision support system. Evaluates multi-parameter hemodynamic and electrocardiographic biomarkers with calibrated risk scoring.
+      </p>
+    </header>
+
+    <!-- Main Workspace Grid -->
+    <div class="dashboard-grid">
+      
+      <!-- Patient Assessment Form Card -->
+      <div class="card" id="patientFormCard">
+        <div class="card-header">
+          <div class="card-title">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            Patient Clinical Biomarkers
+          </div>
+          <span style="font-size: 0.8rem; color: var(--text-dim);">11 Diagnostic Features</span>
+        </div>
+
+        <!-- Quick Presets -->
+        <div class="presets-bar">
+          <span class="presets-label">Load Test Case:</span>
+          <button type="button" class="btn-preset" onclick="loadPreset('healthy')">Low Risk Patient</button>
+          <button type="button" class="btn-preset" onclick="loadPreset('moderate')">Moderate Risk Patient</button>
+          <button type="button" class="btn-preset" onclick="loadPreset('high_risk')">High Risk Patient</button>
+        </div>
+
+        <!-- Validation Alert Box -->
+        <div id="errorAlert" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #fca5a5; padding: 0.8rem 1rem; border-radius: 8px; margin-bottom: 1.25rem; font-size: 0.85rem;"></div>
+
+        <form id="predictionForm">
+          <div class="form-grid">
+
+            <!-- Age -->
+            <div class="form-group">
+              <label class="form-label" for="Age">
+                Age
+                <span class="form-hint">Years</span>
+              </label>
+              <input type="number" id="Age" name="Age" class="form-control" min="18" max="110" value="54" required>
+            </div>
+
+            <!-- Sex -->
+            <div class="form-group">
+              <label class="form-label" for="Sex">Biological Sex</label>
+              <select id="Sex" name="Sex" class="form-control" required>
+                <option value="M" selected>Male (M)</option>
+                <option value="F">Female (F)</option>
+              </select>
+            </div>
+
+            <!-- Chest Pain Type -->
+            <div class="form-group">
+              <label class="form-label" for="ChestPainType">
+                Chest Pain Type
+                <span class="form-hint">CPT</span>
+              </label>
+              <select id="ChestPainType" name="ChestPainType" class="form-control" required>
+                <option value="ASY" selected>Asymptomatic (ASY)</option>
+                <option value="NAP">Non-Anginal Pain (NAP)</option>
+                <option value="ATA">Atypical Angina (ATA)</option>
+                <option value="TA">Typical Angina (TA)</option>
+              </select>
+            </div>
+
+            <!-- Resting Blood Pressure -->
+            <div class="form-group">
+              <label class="form-label" for="RestingBP">
+                Resting Blood Pressure
+                <span class="form-hint">mm Hg</span>
+              </label>
+              <input type="number" id="RestingBP" name="RestingBP" class="form-control" min="60" max="250" value="130" required>
+            </div>
+
+            <!-- Cholesterol -->
+            <div class="form-group">
+              <label class="form-label" for="Cholesterol">
+                Serum Cholesterol
+                <span class="form-hint">mg/dl</span>
+              </label>
+              <input type="number" id="Cholesterol" name="Cholesterol" class="form-control" min="0" max="700" value="230" required>
+            </div>
+
+            <!-- Fasting Blood Sugar -->
+            <div class="form-group">
+              <label class="form-label" for="FastingBS">Fasting Blood Sugar</label>
+              <select id="FastingBS" name="FastingBS" class="form-control" required>
+                <option value="0" selected>&le; 120 mg/dl (Normal)</option>
+                <option value="1">&gt; 120 mg/dl (Hyperglycemic)</option>
+              </select>
+            </div>
+
+            <!-- Resting ECG -->
+            <div class="form-group">
+              <label class="form-label" for="RestingECG">Resting ECG</label>
+              <select id="RestingECG" name="RestingECG" class="form-control" required>
+                <option value="Normal" selected>Normal</option>
+                <option value="ST">ST-T Wave Abnormality</option>
+                <option value="LVH">Left Ventricular Hypertrophy (LVH)</option>
+              </select>
+            </div>
+
+            <!-- Maximum Heart Rate -->
+            <div class="form-group">
+              <label class="form-label" for="MaxHR">
+                Max Heart Rate
+                <span class="form-hint">bpm</span>
+              </label>
+              <input type="number" id="MaxHR" name="MaxHR" class="form-control" min="50" max="230" value="145" required>
+            </div>
+
+            <!-- Exercise Angina -->
+            <div class="form-group">
+              <label class="form-label" for="ExerciseAngina">Exercise-Induced Angina</label>
+              <select id="ExerciseAngina" name="ExerciseAngina" class="form-control" required>
+                <option value="N" selected>No (N)</option>
+                <option value="Y">Yes (Y)</option>
+              </select>
+            </div>
+
+            <!-- Oldpeak ST Depression -->
+            <div class="form-group">
+              <label class="form-label" for="Oldpeak">
+                Oldpeak (ST Depression)
+                <span class="form-hint">Float mm</span>
+              </label>
+              <input type="number" id="Oldpeak" name="Oldpeak" class="form-control" step="0.1" min="-3.0" max="7.0" value="1.2" required>
+            </div>
+
+            <!-- ST Slope -->
+            <div class="form-group full-width">
+              <label class="form-label" for="ST_Slope">Peak Exercise ST Segment Slope</label>
+              <select id="ST_Slope" name="ST_Slope" class="form-control" required>
+                <option value="Up">Upsloping (Up - Favorable)</option>
+                <option value="Flat" selected>Flat (Flat - High Ischemic Correlation)</option>
+                <option value="Down">Downsloping (Down - Critical Abnormality)</option>
+              </select>
+            </div>
+
+          </div>
+
+          <button type="submit" id="submitBtn" class="btn-primary">
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clip-rule="evenodd"></path>
+            </svg>
+            Run Diagnostic Assessment
+          </button>
+        </form>
+      </div>
+
+      <!-- Result Card -->
+      <div class="card" id="resultCard">
+        <div class="card-header">
+          <div class="card-title">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+            Diagnostic Assessment Outcome
+          </div>
+        </div>
+
+        <!-- Initial Placeholder State -->
+        <div id="resultPlaceholder" class="result-placeholder">
+          <div class="pulse-circle">
+            <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+            </svg>
+          </div>
+          <h3 style="color: var(--text-main); font-weight: 600; margin-bottom: 0.5rem;">Awaiting Patient Data</h3>
+          <p style="font-size: 0.88rem; max-width: 320px; margin: 0 auto;">
+            Configure the 11 biomarkers or select a preset case to calculate probability and risk stratification.
+          </p>
+        </div>
+
+        <!-- Populated Result Content -->
+        <div id="resultContent" style="display: none;">
+          <div class="gauge-container">
+            <div class="score-meter">
+              <div class="score-inner">
+                <div id="scoreValue" class="score-value">--%</div>
+                <div class="score-label">Disease Probability</div>
+              </div>
+            </div>
+            <div id="scoreBadge" class="risk-badge badge-mod">ANALYZING</div>
+          </div>
+
+          <div style="background: rgba(15, 23, 42, 0.5); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-card); margin-bottom: 1.25rem;">
+            <div style="font-size: 0.85rem; font-weight: 700; color: #fff; margin-bottom: 0.35rem;">Clinical Evaluation Summary:</div>
+            <p id="clinicalSummaryText" style="font-size: 0.88rem; color: var(--text-muted);"></p>
+          </div>
+
+          <div style="background: rgba(37, 99, 235, 0.08); border-left: 3px solid var(--primary); padding: 0.85rem 1rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-bottom: 1.25rem;">
+            <div style="font-size: 0.82rem; font-weight: 700; color: var(--accent-cyan); margin-bottom: 0.25rem;">Recommended Action Protocol:</div>
+            <p id="actionPlanText" style="font-size: 0.85rem; color: var(--text-main);"></p>
+          </div>
+
+          <!-- Factors Section -->
+          <div class="factors-box">
+            <!-- Risk Flags -->
+            <div class="factor-group">
+              <div class="factor-group-title" style="color: #f87171;">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                Observed Risk Markers
+              </div>
+              <ul id="riskFactorsList" class="factor-list"></ul>
+            </div>
+
+            <!-- Protective Factors -->
+            <div class="factor-group">
+              <div class="factor-group-title" style="color: #34d399;">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.35-.166-2.001A11.954 11.954 0 0110 1.944z" clip-rule="evenodd"></path>
+                </svg>
+                Protective / Favorable Indicators
+              </div>
+              <ul id="protectiveFactorsList" class="factor-list"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Batch Prediction Section -->
+    <div class="card" style="margin-top: 2.5rem;">
+      <div class="card-header">
+        <div class="card-title">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+          </svg>
+          Batch Patient Screening (CSV Upload)
+        </div>
+        <span style="font-size: 0.8rem; color: var(--text-dim);">Multi-Patient Clinical Assessment</span>
+      </div>
+      
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">
+        Upload a hospital cohort CSV file with patient records to generate instant automated risk stratifications.
+      </p>
+
+      <form id="batchUploadForm" style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+        <input type="file" id="batchFile" accept=".csv" class="form-control" style="max-width: 350px;">
+        <button type="submit" class="btn-preset" style="background: var(--primary); color: white; padding: 0.65rem 1.25rem; font-weight: 600;">
+          Process Cohort File
+        </button>
+      </form>
+      <div id="batchStatus" style="display: none; margin-top: 1rem; color: var(--accent-cyan); font-size: 0.9rem; font-weight: 500;"></div>
+
+      <div id="batchResultsContainer" style="display: none; margin-top: 1.5rem; overflow-x: auto;">
+        <table class="styled-table">
+          <thead>
+            <tr>
+              <th>Patient</th>
+              <th>Assessment</th>
+              <th>Probability</th>
+              <th>Risk Tier</th>
+              <th>Summary</th>
+            </tr>
+          </thead>
+          <tbody id="batchResultsBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>CardioSense AI &bull; Full-Stack Healthcare Machine Learning Pipeline &bull; Developed with Scikit-Learn &amp; Flask</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
